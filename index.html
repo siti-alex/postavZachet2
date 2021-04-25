@@ -1,0 +1,326 @@
+<!-- 
+Задача n+1. Склад. Имеется несколько поставщиков и несколько потребителей, 
+каждый из которых обращается на склад в случайные моменты времени и поставляет или 
+потребляет случайное количество некоторого вида продукции. 
+Любой поставщик может поставлять несколько видов продукции. 
+Любой потребитель может заказывать одновременно несколько видов продукции. 
+Общая вместимость склада ограничена.  
+-->
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Зачёт дайте уже</title>
+</head>
+<body>
+<style type="text/css">
+	body {
+	position: fixed;
+	width: 100%;
+	overflow-y: scroll;
+	}
+	.shop {
+    display: block; 
+    text-align: center; 
+    font-style: italic; 
+    margin-top: 10%; 
+    margin-bottom: 5px; 
+    color: #666;
+   }
+   #car {
+   	position: relative;
+   	left: 500px;
+   	transform: scale(-1, 1)
+   }
+   #fields input{
+   	margin-top: 5px;
+   	width: 25px;
+   }
+   /*#carBack {
+   	position: relative; 
+   	visibility: hidden;
+   }*/
+   #people {
+   	position: relative; 
+   	right: 400px;
+   	transform: scale(1, 1)
+   }
+   fieldset {
+   	margin: auto;
+   	/*display: inline-block;*/
+   }
+</style>	
+
+<div class="shop">
+	<img src="image/run.gif" style="width: 7%" id="people"></img>
+	<img src="image/store.png"></img>
+	<img src="image/car.png" id="car"></img>
+	<!-- <img src="image/carBack.png" id=carBack></img> -->
+</div>
+<div id="fields">
+	<fieldset style="width: 100%">
+		<p style="text-align: center"><button onclick="open_shop()" id="button">Открыть магазин</button></p>
+
+		<fieldset style="width: 40%"> 
+	   <legend>Товары на складе</legend>
+	   		<input type="text" id="maxStorage" value="50" disabled> Вместимость на каждый товар;<br>
+		    <input type="text" id="video_card" value="0" disabled> Видеокарты;<br>
+		    <input type="text" id="ssd" value="0" disabled> SSD;<br>
+		    <input type="text" id="monitor" value="0" disabled> Мониторы;<br>
+		</fieldset>   
+		<fieldset style="width: 40%"> 
+			<legend>Очередь</legend>
+		    <input type="text" id="queue_video_card" value="0" disabled> Очередь на видеокарты;
+		    <input type="text" id="queue_need_video_card" value="0" disabled> Всего необходимо;
+		    <input type="text" id="queue_need_first_video_card" value="0" disabled> Ближайший заказ;
+		    <br>
+		    <input type="text" id="queue_ssd" value="0" disabled> Очередь на SSD;
+		    <input type="text" id="queue_need_ssd" value="0" disabled> Всего необходимо;
+		    <input type="text" id="queue_need_first_ssd" value="0" disabled> Ближайший заказ;
+		    <br>
+		    <input type="text" id="queue_monitor" value="0" disabled> Очередь на мониторы; 
+		    <input type="text" id="queue_need_monitor" value="0" disabled> Всего необходимо;
+		    <input type="text" id="queue_need_first_monitor" value="0" disabled> Ближайший заказ;
+		    <br>
+		</fieldset>
+  </fieldset>
+</div>
+
+
+<script type="text/javascript">
+	var providers = {
+		video_card: 0,
+		ssd: 0,
+		monitor: 0,
+	}
+
+	var user = {
+		video_card: 0,
+		ssd: 0,
+		monitor: 0,
+	}
+
+	var storage = {
+		video_card: 0,
+		ssd: 0,
+		monitor: 0,
+	}
+
+	var max = 50;
+
+	var queue = {
+		video_card: [],
+		ssd: [],
+		monitor: [],
+	};
+
+	function postavka() {
+		if(storage.video_card <= max || storage.ssd <= max || storage.monitor <= max) {
+			let product = Object.keys(storage)[Math.floor(Math.random()*Object.keys(storage).length)];
+			let rand = Math.floor(Math.random() * 5);
+			document.getElementById(product).value = storage[product];
+			storage[product] += rand;
+			//console.log(storage[product]);
+		}
+		else {
+			console.log("Опа, склад " + Object.keys(storage) + " переполнен");
+		}
+		//let timerId = setInterval(() => alert('tick'), 2000);
+		//console.log(Math.floor(Math.random() * 5));
+		//console.log(Object.keys(user)[0]); // Обратиться к свойству объекта по номеру (Вывод: video_card)
+		//storage.Object.keys(storage)[Math.floor(Math.random() * 3)] = 13;
+		//console.log(Object.keys(storage)[Math.floor(Math.random() * storage.length)]);
+		//console.log(Object.keys(storage)[Math.floor(Math.random()*Object.keys(storage).length)]); //случайное свойство объекта
+		
+
+
+		//console.log(storage[Object.keys(storage)[Math.floor(Math.random()*Object.keys(storage).length)]]);
+		//console.log(storage);
+	}
+
+	function consuming() {
+
+		let product = Object.keys(storage)[Math.floor(Math.random()*Object.keys(storage).length)];
+			let need = Math.floor(Math.random() * 5);
+			if(queue[product].length+1 !== 0) {
+
+
+			while(queue[product].length+1 !== 0) {
+				console.log("Так, и ?")
+				if(storage[product] >= queue[product][0]) {
+					console.log("Получил товар " + product);
+					storage[product] -= queue[product][0];
+					queue[product].splice(0,1);
+					//document.getElementById("queue_need_"+product).value = sumQueue(queue, product);
+				}
+				else {
+					break;
+				}
+
+			}
+
+			}
+			if(storage[product] >= need) {
+				storage[product] -= need;
+			}
+			else {
+				document.getElementById("queue_"+product).value = queue[product].length;
+				if(queue[product][0] !== undefined){
+					document.getElementById("queue_need_first_"+product).value = queue[product][0];
+				}
+				document.getElementById("queue_need_"+product).value = sumQueue(queue, product);
+				console.log("Дефицит " + product + ", в очереди " + (queue[product].length+1) + " человек");
+				queue[product].push(need);
+				//console.log(queue);
+			}
+			//console.log(queue[product].length);
+			
+			
+			//console.log(storage);
+	}
+
+	function open_shop() {
+		document.getElementById("button").disabled = true;
+		let timerPost = setInterval(() => postavka(), Math.random() * (1000 - 100) + 100);
+		let timerCuns = setInterval(() => consuming(), Math.random() * (1000 - 100) + 100);
+		moveCar();
+		runPeople();
+		// let timerPost = setInterval(() => postavka(), 1000);
+		// let timerCuns = setInterval(() => consuming(), 1000);
+
+		// let monitoring = setInterval(() => console.log(storage),1000)
+		// let monitoring2 = setInterval(() => console.log(queue),1000)
+
+	}
+	//let timerId = setInterval(() => postavka(), 300);
+	//postavka();
+	//open_shop();
+	//queue[ssd].push(1488);
+
+
+	function moveCar(){
+		var car = document.getElementById("car");
+		car.style.visibility = 'visible'
+		var pos = 600;
+  		var id = setInterval(frame, 8);
+	  		function frame() {
+			    if (pos == 0) {
+			      clearInterval(id);
+			      //car.style.visibility = 'hidden';
+			      car.style.transform = 'scale(1,1)';
+			      moveCarBack();
+			    } else {
+			      pos--; 
+			      car.style.left = pos + 'px'; 
+			      //car.style.left = pos + 'px'; 
+		    }
+  		}
+	}
+	function moveCarBack(){
+		var carBack = document.getElementById("car");
+		var pos = 0;
+  		var id = setInterval(frame, 4);
+	  		function frame() {
+		  		carBack.style.visibility = 'visible'
+			    if (pos == 600) {
+			      clearInterval(id);
+			      carBack.style.transform = 'scale(-1,1)';
+			      moveCar();
+			    } else {
+			      pos++; 
+			      carBack.style.left = pos + 'px'; 
+			      //car.style.left = pos + 'px'; 
+		    }
+  		}
+	}
+	function runPeople(){
+		var people = document.getElementById("people");
+		var pos = -400;
+  		var id = setInterval(frame, 10);
+	  		function frame() {
+			    if (pos == 200) {
+			      clearInterval(id);
+			      //people.style.visibility = 'hidden';
+			      people.style.transform = 'scale(-1,1)';
+			      runPeopleBack();
+			    } else {
+			      pos++; 
+			      people.style.left = pos + 'px'; 
+			      //car.style.left = pos + 'px'; 
+		    }
+  		}
+	}
+	function runPeopleBack(){
+		var peopleBack = document.getElementById("people");
+		var pos = 200;
+  		var id = setInterval(frame, 10);
+	  		function frame() {
+		  		peopleBack.style.visibility = 'visible'
+			    if (pos == -400) {
+			      clearInterval(id);
+			      //peopleBack.style.visibility = 'hidden';
+			      peopleBack.style.transform = 'scale(1,1)';
+			      runPeople();
+			    } else {
+			      pos--; 
+			      peopleBack.style.left = pos + 'px'; 
+			      //car.style.left = pos + 'px'; 
+		    }
+	}
+}
+	function sumQueue(mass,name) {
+		let sum = 0;
+			mass[name].forEach((element) => {
+				sum += element;
+			})
+		console.log(sum);	
+		return sum;	
+	}
+	// function sumQueue(obj, name) {
+
+	//   let sum = 0;
+	//   let testex = Object.values(obj);
+	//   for (let salary of Object.values(obj)) {
+	//   	if(salary.length !== 0){
+	//   		//console.log(testex);
+	//   		// salary.forEach((element) => {
+	//   		// 	sum += element
+	//   		// 	console.log(salary);
+	//   		// })
+	//   	}
+	  	
+	//   }
+	//   //console.log(sum);
+	//   //let product = Object.keys(storage)[Math.floor(Math.random()*Object.keys(storage).length)];
+	//   return sum;
+	// }
+
+	// var test = {
+	// 	a: [2,1],
+	// 	b: [],
+	// 	c: [6],
+	// }
+
+	//poehali(test, 'a');
+	//console.log(test);
+	// function fGoBack(){
+	// 	console.log("А я");
+	// 	var car = document.getElementById("car");
+	// 	car.style.visibility = 'visible';
+	// 	var pos = 0;
+ //  		var id = setInterval(frame, 10);
+	//   		function frame() {
+	// 	    if (pos == 100) {
+	// 	      clearInterval(id);
+	// 	      console.log("м?");
+	// 	    } else {
+	// 	    	console.log("А где");
+	// 	      pos++; 
+	// 	      car.style.right = pos + 'px'; 
+	// 	      //car.style.left = pos + 'px'; 
+	// 	    }
+ //  		}
+	// }
+	
+</script>
+</body>
+</html>
